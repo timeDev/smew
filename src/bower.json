@@ -1,0 +1,20 @@
+{
+  "name": "src",
+  "version": "0.0.0",
+  "homepage": "https://github.com/timeDev/smew",
+  "authors": [
+    "timedev <oshomburg@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.5"
+  }
+}
