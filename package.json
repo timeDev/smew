@@ -17,6 +17,6 @@
     },
     "scripts": {
         "make": "gulp --cwd ./build make",
-        "instbower": "bower install"
+        "instbower": "(cd src && bower install)"
     }
 }
