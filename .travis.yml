@@ -8,7 +8,7 @@ before_install:
 - chmod +x build/publish-ghpages.sh
 install:
 - npm install
-- (cd src && npm run instbower)
+- (cd src && npm run .. instbower)
 script:
 - npm run make
 after_success: build/publish-ghpages.sh
