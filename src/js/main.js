@@ -27,24 +27,31 @@ var THREE = require('./vendor/three'),
 
 console.log("SMEW Version", require('./version').versionString);
 
+var toolsSize = 150, propertiesSize = 300,
+    viewHeight = window.innerHeight / 2,
+    viewWidth = (window.innerWidth - toolsSize - propertiesSize) / 2;
+
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var cameraFP = new THREE.PerspectiveCamera(75, viewWidth / viewHeight, 0.1, 1000);
+var cameraTop = new THREE.OrthographicCamera(viewWidth / -2, viewWidth / 2, viewHeight / 2, viewHeight / -2, 1, 1000);
+var cameraFront = new THREE.OrthographicCamera(viewWidth / -2, viewWidth / 2, viewHeight / 2, viewHeight / -2, 1, 1000);
+var cameraSide = new THREE.OrthographicCamera(viewWidth / -2, viewWidth / 2, viewHeight / 2, viewHeight / -2, 1, 1000);
 
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(viewWidth, viewHeight);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-camera.position.z = 5;
+cameraFP.position.z = 5;
 
 renderloop(function () {
     cube.rotation.x += 0.1;
     cube.rotation.y += 0.1;
 
-    renderer.render(scene, camera);
+    renderer.render(scene, cameraFP);
 }).start();
 
 function initDom() {
@@ -52,9 +59,11 @@ function initDom() {
 }
 
 window.addEventListener('resize', function () {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / (window.innerHeight);
-    camera.updateProjectionMatrix();
+    viewHeight = window.innerHeight / 2;
+    viewWidth = (window.innerWidth - toolsSize - propertiesSize) / 2;
+    renderer.setSize(viewWidth, viewHeight);
+    cameraFP.aspect = viewWidth / viewHeight;
+    cameraFP.updateProjectionMatrix();
 });
 
 if (document.readyState === 'interactive') {
