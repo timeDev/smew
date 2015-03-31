@@ -27,6 +27,9 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Simple Map Editor in the Web</title>
+    <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="bower_components/core-splitter/core-splitter.html">
     <script src="smew.js"></script>
     <style>
         * {
@@ -39,25 +42,45 @@
             font-family: 'Open Sans', 'Source Sans Pro', sans-serif;
         }
 
-        canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%
+        .canvas-container {
+            background-color: black;
         }
     </style>
 </head>
 <body>
-<div id="tools">
 
-</div>
-<div id="views">
-    <div id="vFirst"></div>
-    <div id="vTop"></div>
-    <div id="vSide"></div>
-    <div id="vFront"></div>
-</div>
-<div id="props">
+<div horizontal layout style="height:100%">
+    <div flex horizontal layout style="height:100%">
+        <div style="width:150px">
 
+        </div>
+        <core-splitter direction="left"></core-splitter>
+        <div flex vertical layout style="height:100%">
+            <div horizontal layout>
+                <div class="canvas-container">
+                    <canvas id="v-first"></canvas>
+                </div>
+                <core-splitter direction="left"></core-splitter>
+                <div flex class="canvas-container">
+                    <canvas id="v-top"></canvas>
+                </div>
+            </div>
+            <core-splitter direction="up"></core-splitter>
+            <div flex horizontal layout>
+                <div class="canvas-container">
+                    <canvas id="v-side"></canvas>
+                </div>
+                <core-splitter direction="left"></core-splitter>
+                <div flex class="canvas-container">
+                    <canvas id="v-front"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <core-splitter direction="right"></core-splitter>
+    <div style="width:300px">
+
+    </div>
 </div>
 </body>
 </html>

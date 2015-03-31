@@ -27,44 +27,146 @@ var THREE = require('./vendor/three'),
 
 console.log("SMEW Version", require('./version').versionString);
 
-var toolsSize = 150, propertiesSize = 300,
-    viewHeight = window.innerHeight / 2,
-    viewWidth = (window.innerWidth - toolsSize - propertiesSize) / 2;
-
 var scene = new THREE.Scene();
-var cameraFP = new THREE.PerspectiveCamera(75, viewWidth / viewHeight, 0.1, 1000);
-var cameraTop = new THREE.OrthographicCamera(viewWidth / -2, viewWidth / 2, viewHeight / 2, viewHeight / -2, 1, 1000);
-var cameraFront = new THREE.OrthographicCamera(viewWidth / -2, viewWidth / 2, viewHeight / 2, viewHeight / -2, 1, 1000);
-var cameraSide = new THREE.OrthographicCamera(viewWidth / -2, viewWidth / 2, viewHeight / 2, viewHeight / -2, 1, 1000);
+var cameraFirst = new THREE.PerspectiveCamera(75, 1, 0.1, 1000),
+    cameraTop = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 1000),
+    cameraFront = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 1000),
+    cameraSide = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 1000);
+
+var ctxFirst, ctxTop, ctxSide, ctxFront;
 
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize(viewWidth, viewHeight);
 
 var geometry = new THREE.BoxGeometry(1, 1, 1);
 var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-cameraFP.position.z = 5;
+cameraFirst.position.z = 5;
 
-renderloop(function () {
+cameraTop.position.y = 5;
+cameraTop.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI * 1.5);
+cameraSide.position.x = -5;
+cameraSide.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI * 1.5);
+cameraFront.position.z = 5;
+
+var loop = renderloop(function () {
     cube.rotation.x += 0.1;
     cube.rotation.y += 0.1;
 
-    renderer.render(scene, cameraFP);
-}).start();
+    var canvas, w, h;
+
+    // First person view
+    // Get size from parent
+    canvas = ctxFirst.canvas;
+    w = canvas.parentElement.clientWidth;
+    h = canvas.parentElement.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    if (w > 0 && h > 0) {
+        // Resize camera
+        cameraFirst.aspect = w / h;
+        cameraFirst.updateProjectionMatrix();
+
+        // Resize renderer
+        renderer.setSize(w, h);
+
+        // Render scene
+        renderer.render(scene, cameraFirst);
+
+        // Update canvas
+        ctxFirst.drawImage(renderer.domElement, 0, 0);
+    }
+
+    var viewSize = 10, aspect;
+
+    // Top view
+    canvas = ctxTop.canvas;
+    w = canvas.parentElement.clientWidth;
+    h = canvas.parentElement.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    if (w > 0 && h > 0) {
+        // Resize camera
+        aspect = w / h;
+        cameraTop.left = aspect * viewSize / -2;
+        cameraTop.right = aspect * viewSize / 2;
+        cameraTop.top = viewSize / 2;
+        cameraTop.bottom = viewSize / -2;
+        cameraTop.updateProjectionMatrix();
+
+        // Resize renderer
+        renderer.setSize(w, h);
+
+        // Render scene
+        renderer.render(scene, cameraTop);
+
+        // Update canvas
+        ctxTop.drawImage(renderer.domElement, 0, 0);
+    }
+
+    // Side view
+    canvas = ctxSide.canvas;
+    w = canvas.parentElement.clientWidth;
+    h = canvas.parentElement.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    if (w > 0 && h > 0) {
+        // Resize camera
+        aspect = w / h;
+        cameraSide.left = aspect * viewSize / -2;
+        cameraSide.right = aspect * viewSize / 2;
+        cameraSide.top = viewSize / 2;
+        cameraSide.bottom = viewSize / -2;
+        cameraSide.updateProjectionMatrix();
+
+        // Resize renderer
+        renderer.setSize(w, h);
+
+        // Render scene
+        renderer.render(scene, cameraSide);
+
+        // Update canvas
+        ctxSide.drawImage(renderer.domElement, 0, 0);
+    }
+
+    // Front view
+    canvas = ctxFront.canvas;
+    w = canvas.parentElement.clientWidth;
+    h = canvas.parentElement.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    if (w > 0 && h > 0) {
+        // Resize camera
+        aspect = w / h;
+        cameraFront.left = aspect * viewSize / -2;
+        cameraFront.right = aspect * viewSize / 2;
+        cameraFront.top = viewSize / 2;
+        cameraFront.bottom = viewSize / -2;
+        cameraFront.updateProjectionMatrix();
+
+        // Resize renderer
+        renderer.setSize(w, h);
+
+        // Render scene
+        renderer.render(scene, cameraFront);
+
+        // Update canvas
+        ctxFront.drawImage(renderer.domElement, 0, 0);
+    }
+
+});
 
 function initDom() {
-    document.body.appendChild(renderer.domElement);
-}
+    ctxFirst = document.getElementById('v-first').getContext('2d');
+    ctxTop = document.getElementById('v-top').getContext('2d');
+    ctxSide = document.getElementById('v-side').getContext('2d');
+    ctxFront = document.getElementById('v-front').getContext('2d');
 
-window.addEventListener('resize', function () {
-    viewHeight = window.innerHeight / 2;
-    viewWidth = (window.innerWidth - toolsSize - propertiesSize) / 2;
-    renderer.setSize(viewWidth, viewHeight);
-    cameraFP.aspect = viewWidth / viewHeight;
-    cameraFP.updateProjectionMatrix();
-});
+    window.addEventListener('polymer-ready', function() {
+        loop.start();
+    });
+}
 
 if (document.readyState === 'interactive') {
     initDom();
