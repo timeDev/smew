@@ -50,6 +50,25 @@ cameraSide.position.x = -5;
 cameraSide.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI * 1.5);
 cameraFront.position.z = 5;
 
+function addGrids() {
+    var gridXZ = new THREE.GridHelper(100, 0.5),
+        gridXY = new THREE.GridHelper(100, 0.5),
+        gridYZ = new THREE.GridHelper(100, 0.5);
+
+    gridXZ.setColors(0xff0000, 0xaa0000);
+    gridXY.setColors(0x00ff00, 0x00aa00);
+    gridYZ.setColors(0x0000ff, 0x0000aa);
+
+    gridXY.rotation.x = Math.PI / 2;
+    gridYZ.rotation.z = Math.PI / 2;
+
+    scene.add(gridXZ);
+    scene.add(gridXY);
+    scene.add(gridYZ);
+}
+
+addGrids();
+
 var loop = renderloop(function () {
     cube.rotation.x += 0.1;
     cube.rotation.y += 0.1;
@@ -163,7 +182,7 @@ function initDom() {
     ctxSide = document.getElementById('v-side').getContext('2d');
     ctxFront = document.getElementById('v-front').getContext('2d');
 
-    window.addEventListener('polymer-ready', function() {
+    window.addEventListener('polymer-ready', function () {
         loop.start();
     });
 }
