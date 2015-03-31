@@ -183,6 +183,7 @@ function initDom() {
     ctxFront = document.getElementById('v-front').getContext('2d');
 
     window.addEventListener('polymer-ready', function () {
+        require('./errorHelper').show();
         loop.start();
     });
 }

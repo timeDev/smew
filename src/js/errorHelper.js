@@ -22,11 +22,35 @@
  * THE SOFTWARE.
  */
 /*global require, module, exports */
-exports.major = 0;
-exports.minor = 0;
-exports.revision = 0;
-exports.build = 101;
-exports.timestamp = "2015-03-31T17:40:55.121Z";
 
-exports.versionArray = [exports.major, exports.minor, exports.revision, exports.build];
-exports.versionString = exports.versionArray.join(".");
+var queue = [], enabled = false, waiting = false;
+
+exports.queue = function (msg, duration, html) {
+    queue.push({msg: msg || "An error has occurred", duration: duration || 3000, html: html || ''});
+
+    if (enabled && !waiting) {
+        exports.show();
+    }
+};
+
+exports.show = function () {
+    enabled = true;
+
+    if (queue.length < 1 || waiting) {
+        return;
+    }
+    waiting = true;
+    // Take the next one off the queue
+    var err = queue.pop();
+    var toast = document.createElement('paper-toast');
+    toast.setAttribute('text', err.msg);
+    toast.setAttribute('duration', err.duration.toString());
+    toast.insertAdjacentHTML('afterbegin', err.html);
+    toast.addEventListener('core-overlay-close-completed', function () {
+        document.body.removeChild(toast);
+        waiting = false;
+        // as one closes, show the next
+        exports.show();
+    }, false);
+    document.body.appendChild(toast);
+};
