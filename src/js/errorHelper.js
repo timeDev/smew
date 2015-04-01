@@ -42,6 +42,7 @@ exports.show = function () {
     waiting = true;
     // Take the next one off the queue
     var err = queue.pop();
+    console.error("Error:", err.msg);
     var toast = document.createElement('paper-toast');
     toast.setAttribute('text', err.msg);
     toast.setAttribute('duration', err.duration.toString());
@@ -53,4 +54,6 @@ exports.show = function () {
         exports.show();
     }, false);
     document.body.appendChild(toast);
+    console.dir(toast);
+    toast.show();
 };

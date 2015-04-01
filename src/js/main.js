@@ -23,7 +23,8 @@
  */
 /*global require, module, exports */
 var THREE = require('./vendor/three'),
-    renderloop = require('./renderloop');
+    renderloop = require('./renderloop'),
+    PointerLockControls = require('./pointerLockControls');
 
 console.log("SMEW Version", require('./version').versionString);
 
@@ -32,6 +33,10 @@ var cameraFirst = new THREE.PerspectiveCamera(75, 1, 0.1, 1000),
     cameraTop = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 1000),
     cameraFront = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 1000),
     cameraSide = new THREE.OrthographicCamera(-150, 150, 150, -150, 1, 1000);
+
+scene.add(cameraTop);
+scene.add(cameraSide);
+scene.add(cameraFront);
 
 var ctxFirst, ctxTop, ctxSide, ctxFront;
 
@@ -42,7 +47,7 @@ var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-cameraFirst.position.z = 5;
+var controls;
 
 cameraTop.position.y = 5;
 cameraTop.rotateOnAxis(new THREE.Vector3(1, 0, 0), Math.PI * 1.5);
@@ -174,13 +179,27 @@ var loop = renderloop(function () {
         ctxFront.drawImage(renderer.domElement, 0, 0);
     }
 
+    controls.update();
 });
 
 function initDom() {
-    ctxFirst = document.getElementById('v-first').getContext('2d');
+    var vFirst = document.getElementById('v-first');
+    ctxFirst = vFirst.getContext('2d');
     ctxTop = document.getElementById('v-top').getContext('2d');
     ctxSide = document.getElementById('v-side').getContext('2d');
     ctxFront = document.getElementById('v-front').getContext('2d');
+
+    vFirst.addEventListener('click', function (e) {
+        if (e.button === 0) {
+            // right-click
+            controls.lockPointer();
+            e.preventDefault();
+            return false;
+        }
+    }, false);
+
+    controls = new PointerLockControls(cameraFirst, {element: vFirst});
+    scene.add(controls.getObject());
 
     window.addEventListener('polymer-ready', function () {
         require('./errorHelper').show();
