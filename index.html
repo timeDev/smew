@@ -30,15 +30,13 @@
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="bower_components/core-splitter/core-splitter.html">
+    <link rel="import" href="bower_components/paper-toast/paper-toast.html">
     <script src="smew.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
         body, html {
             height: 100%;
+            margin: 0;
+            padding: 0;
             font-family: 'Open Sans', 'Source Sans Pro', sans-serif;
         }
 
@@ -56,8 +54,8 @@
         </div>
         <core-splitter direction="left"></core-splitter>
         <div flex vertical layout style="height:100%">
-            <div horizontal layout>
-                <div class="canvas-container">
+            <div horizontal layout style="height:49%">
+                <div class="canvas-container" style="width:49.5%">
                     <canvas id="v-first"></canvas>
                 </div>
                 <core-splitter direction="left"></core-splitter>
@@ -67,7 +65,7 @@
             </div>
             <core-splitter direction="up"></core-splitter>
             <div flex horizontal layout>
-                <div class="canvas-container">
+                <div class="canvas-container" style="width:49.5%">
                     <canvas id="v-side"></canvas>
                 </div>
                 <core-splitter direction="left"></core-splitter>
