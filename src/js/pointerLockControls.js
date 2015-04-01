@@ -151,12 +151,22 @@ module.exports = function (camera, params) {
 
     var velocity = params.velocity || 5;
 
+    var v1 = new THREE.Vector3(),
+        axis = new THREE.Vector3(0, 0, 1);
+
+    var translateZ = function (distance) {
+        v1.copy(axis).applyQuaternion(pitchObject.quaternion).applyQuaternion(yawObject.quaternion);
+
+        yawObject.position.add(v1.multiplyScalar(distance));
+    };
+
     this.update = function () {
         var dt = (performance.now() - timestamp) / 1000;
         timestamp = performance.now();
         if (this.enabled) {
-            yawObject.translateZ(dt * (movement.back - movement.forward) * velocity);
-            yawObject.translateX(dt * (movement.right - movement.left) * velocity);
+            var distance = dt * velocity;
+            translateZ(distance * (movement.back - movement.forward));
+            yawObject.translateX(distance * (movement.right - movement.left));
         }
     };
 
