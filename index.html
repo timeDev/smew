@@ -31,17 +31,48 @@
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="bower_components/core-splitter/core-splitter.html">
     <link rel="import" href="bower_components/paper-toast/paper-toast.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
     <script src="smew.js"></script>
     <style>
         body, html {
             height: 100%;
             margin: 0;
             padding: 0;
-            font-family: 'Open Sans', 'Source Sans Pro', sans-serif;
+            font-family: 'Roboto', 'Open Sans', 'Source Sans Pro', sans-serif;
         }
 
         .canvas-container {
             background-color: black;
+        }
+
+        #console-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #202020;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        #console-output {
+            background-color: #505050;
+            padding: 2px;
+            font-size: 12px;
+            max-height: 350px;
+            overflow-y: scroll;
+        }
+
+        #console-input {
+            width: 100%;
+        }
+
+        #console-input /deep/ #input {
+            background-color: #505050;
+        }
+
+        #console-input /deep/ #decorator {
+            padding: 0;
         }
     </style>
 </head>
@@ -49,8 +80,11 @@
 
 <div horizontal layout style="height:100%">
     <div flex horizontal layout style="height:100%">
-        <div style="width:150px">
-
+        <div style="width:250px; position:relative">
+            <div id="console-container">
+                <div id="console-output"></div>
+                <paper-input id="console-input"></paper-input>
+            </div>
         </div>
         <core-splitter direction="left"></core-splitter>
         <div flex vertical layout style="height:100%">
@@ -76,7 +110,7 @@
         </div>
     </div>
     <core-splitter direction="right"></core-splitter>
-    <div style="width:300px">
+    <div style="width:250px">
 
     </div>
 </div>
