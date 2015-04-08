@@ -163,6 +163,7 @@ function initDom() {
 
     window.addEventListener('polymer-ready', function () {
         require('./errorHelper').show();
+        require('./console').init();
         loop.start();
     });
 }

@@ -22,36 +22,28 @@
  * THE SOFTWARE.
  */
 /*global require, module, exports */
+var
+// Module
+    validate = require('./validate'),
+    engine = require('./engine');
 
-var queue = [], enabled = false, waiting = false;
+module.exports = function (syntaxMsg, syntax, name, handler) {
+    engine.registerCommand(name, module.exports.make(syntaxMsg, syntax, handler));
+};
 
-exports.queue = function (msg, duration, html) {
-    queue.push({msg: msg || "An error has occurred", duration: duration || 3000, html: html || ''});
-    console.error("Error:", msg);
-    if (enabled && !waiting) {
-        exports.show();
+module.exports.make = function (syntaxMsg, syntax, handler) {
+    return function (args) {
+        var match = validate(syntax, args);
+        if (match.matched) {
+            return handler.call(engine.env, match);
+        } else {
+            engine.env.error("Syntax: " + syntaxMsg);
+        }
+        if (match.tma) {
+            engine.env.warn("Too many arguments!");
+        }
     }
 };
 
-exports.show = function () {
-    enabled = true;
-
-    if (queue.length < 1 || waiting) {
-        return;
-    }
-    waiting = true;
-    // Take the next one off the queue
-    var err = queue.pop();
-    var toast = document.createElement('paper-toast');
-    toast.setAttribute('text', err.msg);
-    toast.setAttribute('duration', err.duration.toString());
-    toast.insertAdjacentHTML('afterbegin', err.html);
-    toast.addEventListener('core-overlay-close-completed', function () {
-        document.body.removeChild(toast);
-        waiting = false;
-        // as one closes, show the next
-        exports.show();
-    }, false);
-    document.body.appendChild(toast);
-    toast.show();
-};
+// For easy imports
+module.exports.engine = engine;
