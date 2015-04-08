@@ -102,85 +102,45 @@ var loop = renderloop(function () {
         ctxFirst.drawImage(renderer.domElement, 0, 0);
     }
 
-    var viewSize = 10, aspect;
+    var viewSize = 10;
 
     // Top view
-    canvas = ctxTop.canvas;
-    w = canvas.parentElement.clientWidth;
-    h = canvas.parentElement.clientHeight;
-    canvas.width = w;
-    canvas.height = h;
-    if (w > 0 && h > 0) {
-        // Resize camera
-        aspect = w / h;
-        cameraTop.left = aspect * viewSize / -2;
-        cameraTop.right = aspect * viewSize / 2;
-        cameraTop.top = viewSize / 2;
-        cameraTop.bottom = viewSize / -2;
-        cameraTop.updateProjectionMatrix();
-
-        // Resize renderer
-        renderer.setSize(w, h);
-
-        // Render scene
-        renderer.render(scene, cameraTop);
-
-        // Update canvas
-        ctxTop.drawImage(renderer.domElement, 0, 0);
-    }
+    renderUpdateCanvas(ctxTop, cameraTop, viewSize);
 
     // Side view
-    canvas = ctxSide.canvas;
-    w = canvas.parentElement.clientWidth;
-    h = canvas.parentElement.clientHeight;
-    canvas.width = w;
-    canvas.height = h;
-    if (w > 0 && h > 0) {
-        // Resize camera
-        aspect = w / h;
-        cameraSide.left = aspect * viewSize / -2;
-        cameraSide.right = aspect * viewSize / 2;
-        cameraSide.top = viewSize / 2;
-        cameraSide.bottom = viewSize / -2;
-        cameraSide.updateProjectionMatrix();
-
-        // Resize renderer
-        renderer.setSize(w, h);
-
-        // Render scene
-        renderer.render(scene, cameraSide);
-
-        // Update canvas
-        ctxSide.drawImage(renderer.domElement, 0, 0);
-    }
+    renderUpdateCanvas(ctxSide, cameraSide, viewSize);
 
     // Front view
-    canvas = ctxFront.canvas;
-    w = canvas.parentElement.clientWidth;
-    h = canvas.parentElement.clientHeight;
-    canvas.width = w;
-    canvas.height = h;
-    if (w > 0 && h > 0) {
-        // Resize camera
-        aspect = w / h;
-        cameraFront.left = aspect * viewSize / -2;
-        cameraFront.right = aspect * viewSize / 2;
-        cameraFront.top = viewSize / 2;
-        cameraFront.bottom = viewSize / -2;
-        cameraFront.updateProjectionMatrix();
-
-        // Resize renderer
-        renderer.setSize(w, h);
-
-        // Render scene
-        renderer.render(scene, cameraFront);
-
-        // Update canvas
-        ctxFront.drawImage(renderer.domElement, 0, 0);
-    }
+    renderUpdateCanvas(ctxFront, cameraFront, viewSize);
 
     controls.update();
 });
+
+function renderUpdateCanvas(ctx, camera, viewSize) {
+    var canvas = ctx.canvas,
+        w = canvas.parentElement.clientWidth,
+        h = canvas.parentElement.clientHeight;
+    canvas.width = w;
+    canvas.height = h;
+    if (w > 0 && h > 0) {
+        // Resize camera
+        var aspect = w / h;
+        camera.left = aspect * viewSize / -2;
+        camera.right = aspect * viewSize / 2;
+        camera.top = viewSize / 2;
+        camera.bottom = viewSize / -2;
+        camera.updateProjectionMatrix();
+
+        // Resize renderer
+        renderer.setSize(w, h);
+
+        // Render scene
+        renderer.render(scene, camera);
+
+        // Update canvas
+        ctx.drawImage(renderer.domElement, 0, 0);
+    }
+}
 
 function initDom() {
     var vFirst = document.getElementById('v-first');
